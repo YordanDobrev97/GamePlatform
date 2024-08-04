@@ -1,27 +1,25 @@
-import 'reflect-metadata'
-
 import * as PIXI from 'pixi.js'
-import { container, TYPES } from './inversify.config'
-import { IBaseLoader } from './loaders/IBaseLoader'
-import { BaseLoader } from './loaders/BaseLoader'
-import { ILoader } from './loaders/ILoader'
+import { ReelsView } from './reels/ReelsView'
 
 export class Main {
     private _app: PIXI.Application
-    private baseLoader: ILoader
 
     constructor() {
-        this._app = container.get<PIXI.Application>(TYPES.Application);
-        console.log('app', this._app)
+        this._app =  new PIXI.Application({
+            width: window.innerWidth,
+            height: window.innerHeight,
+            backgroundColor: 0x30305b
+        })
+
         const root = document.getElementById('pixi-root')
         root.appendChild(this._app.view)
 
-        this.baseLoader = container.get<ILoader>(BaseLoader)
+        globalThis.__PIXI_APP__ = this._app
         this.init()
     }
 
     private async init() {
-        await this.baseLoader.load()
+        new ReelsView(this._app)
     }
 }
 
